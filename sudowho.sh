@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 0.1.0
+# Version 0.2.0
 
 SUDOERS="/etc/sudoers"
 SUDO_DIR="/etc/sudoers.d/"
@@ -23,17 +23,29 @@ SUDO_RULES=$($SUDO -u root cat $SUDOERS $SUDO_DIR/* |  egrep '.*=\(.*:.*' | awk 
 for x in $SUDO_RULES;
 do
     case $x in
-        %*)
+    %*)
             # sudo via group
             group=$(echo $x | sed -e 's/%//g')
             for members in $(getent group $group | awk -F: '{ print $NF }' | sed -e 's/,/ /g' )
             do
-                echo -n "Group;$group;$members;"
+                echo -n "group;$group;$members;"
                 getent passwd $members | awk -F: '{ print $5 }'
             done
         ;;
-        *)
-            echo -n "Direct;user;$x;"
+    +*)
+            # sudo via a netgroup
+            # getent netgroup [name]
+            group=$(echo $x | sed -e 's/+//g')
+            for members in $(getent netgroup $group | sed -e 's/glb-hpc //g' -e 's/ //g' -e 's/(,/ /g' -e 's/,)//g' )
+            do
+                echo -n "netgroup;$group;$members;"
+                getent passwd $members | awk -F: '{ print $5 }'
+            done
+        ;;
+
+    *)
+            # sudo via user directly configured
+            echo -n "direct;;$x;"
             getent passwd $x | awk -F: '{ print $5 }'
         ;;
     esac
