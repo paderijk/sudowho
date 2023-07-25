@@ -5,7 +5,7 @@
 ### Added:
  - Parsing users and show display name 
  - Parsing members of groups
- - Output in CSV format
+ - Output in Semicolon (;) seperate value format
  - Use sudo to read files for least privileged appraoch 
 
 ---------------------------------------------------------------------------------
