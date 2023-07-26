@@ -1,5 +1,13 @@
 # sudowho Changelog
 
+## sudowho 0.4.0 (2023-09-26)
+### Added:
+ - Rules for `sudo` in the documentation to have least privileged access ([#2][i2])
+ - Added hostname to the output in the first field, in order to make data analytics across multiple systems easier
+### Fixed
+ - Modified the filter so `Cmnd_Alias` is filtered out, in 0.3.0 was the `n` forgotten (`Cmd_Alias`)
+
+
 ## sudowho 0.3.0 (2023-09-26)
 ### Added:
  - Added to the output where the rule sits
@@ -22,8 +30,9 @@
 ### Added:
  - Parsing users and show display name 
  - Parsing members of groups
- - Output in Semicolon (;) seperate value format
+ - Output in Semicolon (`;`) seperate value format
  - Use sudo to read files for least privileged appraoch 
 
 ---------------------------------------------------------------------------------
 [i1]: https://github.com/paderijk/sudowho/issues/1
+[i2]: https://github.com/paderijk/sudowho/issues/2

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 0.3.0
+# Version 0.4.0
 
 SUDOERS="/etc/sudoers"
 
@@ -32,7 +32,7 @@ parse_sudo_rules ()
                 group=$(echo $x | sed -e 's/%//g')
                 for members in $(getent group $group | awk -F: '{ print $NF }' | sed -e 's/,/ /g' )
                 do
-                    echo -n "group;$group;$members;"
+                    echo -n "$HOSTNAME;group;$group;$members;"
                     echo -n $(getent passwd $members | awk -F: '{ print $5 }')
                     echo ";"$sudo_file";"
                 done
@@ -43,7 +43,7 @@ parse_sudo_rules ()
                 group=$(echo $x | sed -e 's/+//g')
                 for members in $(getent netgroup $group | sed -e 's/ //g' -e 's/(,/ /g' -e 's/,)//g' | awk -F$group '{ print $NF }' )
                 do
-                    echo -n "netgroup;$group;$members;"
+                    echo -n "$HOSTNAME;netgroup;$group;$members;"
                     echo -n "$(getent passwd $members | awk -F: '{ print $5 }')"
                     echo ";"$sudo_file";"
                 done
@@ -51,7 +51,7 @@ parse_sudo_rules ()
 
         *)
                 # sudo via user directly configured
-                echo -n "direct;;$x;"
+                echo -n "$HOSTNAME;direct;;$x;"
                 echo -n $(getent passwd $x | awk -F: '{ print $5 }')
                 echo ";"$sudo_file";"
             ;;
@@ -70,7 +70,7 @@ SUDO_INCLUDE_FILES=$($SUDO -u root $FIND $SUDO_INCLUDE_DIR -type f -print)
 # Parse the files
 for sudo_file in $SUDOERS $SUDO_INCLUDE_FILES;
 do
-    SUDO_RULES=$($SUDO -u root cat $sudo_file | grep -v '^#' | grep -v "^   "| grep -v "^Defaults" | grep -v "^Host_Alias" | grep -v "^User_Alias" | grep -v "^Cmd_Alias" | awk '{ print $1 }')
+    SUDO_RULES=$($SUDO -u root cat $sudo_file | grep -v '^#' | grep -v "^   "| grep -v "^Defaults" | grep -v "^Host_Alias" | grep -v "^User_Alias" | grep -v "^Cmnd_Alias" | awk '{ print $1 }')
     if [ ! -z "$SUDO_RULES" ];
     then
         parse_sudo_rules |  sed -e 's/^$//g'
