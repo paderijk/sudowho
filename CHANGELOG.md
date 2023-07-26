@@ -1,5 +1,15 @@
 # sudowho Changelog
 
+## sudowho 0.3.0 (2023-09-26)
+### Added:
+ - Added to the output where the rule sits
+ - Remove lines like `Cmd_Alias`, `Host_Alias`, `User_Alias` from being parsed
+ - Started to use functions
+ - Parse from `/etc/sudoers` file the `#includedir` value
+ - Output examples
+### Fixed
+ - RHEL7 issue fixed ([#1][i1])
+
 ## sudowho 0.2.0 (2023-09-25)
 ### Added:
  - Documentation on the output
@@ -16,4 +26,4 @@
  - Use sudo to read files for least privileged appraoch 
 
 ---------------------------------------------------------------------------------
-
+[i1]: https://github.com/paderijk/sudowho/issues/1
