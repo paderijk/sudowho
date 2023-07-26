@@ -25,6 +25,11 @@ sudowho ALL=(ALL:ALL) SUDOWHO_CMD
 bash sudowho.sh
 ```
 
+or to set an alternative file instead of `/etc/sudoers`:
+```bash
+bash sudowho.sh /etc/sudo-other-file
+```
+
 ## Output
 
 Output will be seperating the values in a semicolumn.

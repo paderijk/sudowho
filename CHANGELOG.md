@@ -1,12 +1,17 @@
 # sudowho Changelog
 
+## sudowho 0.5.0 (2023-09-26)
+### Added:
+ - Put more things into functions to become more future proof
+ - Dummy function to parse `User_Alias` in the future
+ - Allow to parse an alternative file via the command line as first option `sudowho.sh /etc/alternative-sudoers`
+
 ## sudowho 0.4.0 (2023-09-26)
 ### Added:
  - Rules for `sudo` in the documentation to have least privileged access ([#2][i2])
  - Added hostname to the output in the first field, in order to make data analytics across multiple systems easier
 ### Fixed
  - Modified the filter so `Cmnd_Alias` is filtered out, in 0.3.0 was the `n` forgotten (`Cmd_Alias`)
-
 
 ## sudowho 0.3.0 (2023-09-26)
 ### Added:
@@ -26,7 +31,6 @@
  - Usergroup for direct user is now empty
 
 ## sudowho 0.1.0 (2023-09-25)
-
 ### Added:
  - Parsing users and show display name 
  - Parsing members of groups
