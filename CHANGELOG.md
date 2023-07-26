@@ -5,6 +5,7 @@
  - Put more things into functions to become more future proof
  - Dummy function to parse `User_Alias` in the future
  - Allow to parse an alternative file via the command line as first option `sudowho.sh /etc/alternative-sudoers`
+ - Check if the `/etc/sudoers` file or its alternative are readible via the `sudo` command
 
 ## sudowho 0.4.0 (2023-09-26)
 ### Added:
