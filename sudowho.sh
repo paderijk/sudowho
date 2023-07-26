@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 0.4.0
+# Version 0.5.0
 
 SUDOERS="/etc/sudoers"
 
@@ -20,7 +20,6 @@ then
 fi
 
 #------ Functions
-
 # Function to parse the sudo rules
 parse_sudo_rules ()
 {
@@ -28,36 +27,57 @@ parse_sudo_rules ()
     do
         case $x in
         %*)
-                # sudo via group
-                group=$(echo $x | sed -e 's/%//g')
-                for members in $(getent group $group | awk -F: '{ print $NF }' | sed -e 's/,/ /g' )
-                do
-                    echo -n "$HOSTNAME;group;$group;$members;"
-                    echo -n $(getent passwd $members | awk -F: '{ print $5 }')
-                    echo ";"$sudo_file";"
-                done
-            ;;
+            # % sign indicates a group
+            sudo_group
+           ;;
         +*)
-                # sudo via a netgroup
-                # getent netgroup [name]
-                group=$(echo $x | sed -e 's/+//g')
-                for members in $(getent netgroup $group | sed -e 's/ //g' -e 's/(,/ /g' -e 's/,)//g' | awk -F$group '{ print $NF }' )
-                do
-                    echo -n "$HOSTNAME;netgroup;$group;$members;"
-                    echo -n "$(getent passwd $members | awk -F: '{ print $5 }')"
-                    echo ";"$sudo_file";"
-                done
-            ;;
-
+            # + sign indicates a netgroup
+            sudo_netgroup
+           ;;
         *)
-                # sudo via user directly configured
-                echo -n "$HOSTNAME;direct;;$x;"
-                echo -n $(getent passwd $x | awk -F: '{ print $5 }')
-                echo ";"$sudo_file";"
+            # sudo via user directly configured
+            sudo_direct
             ;;
         esac
-    done 
+    done
 }
+
+# Parse details direct user
+sudo_direct ()
+{
+    # sudo via user directly configured
+    echo -n "$HOSTNAME;direct;;$x;"
+    echo -n $(getent passwd $x | awk -F: '{ print $5 }')
+    echo ";"$sudo_file";"
+}
+
+# Parse details group user
+sudo_group ()
+{
+    # sudo via group
+    group=$(echo $x | sed -e 's/%//g')
+    for members in $(getent group $group | awk -F: '{ print $NF }' | sed -e 's/,/ /g' )
+    do
+        echo -n "$HOSTNAME;group;$group;$members;"
+        echo -n $(getent passwd $members | awk -F: '{ print $5 }')
+        echo ";"$sudo_file";"
+    done
+}
+
+# Parse details netgroup user
+sudo_netgroup()
+{
+    # sudo via a netgroup
+    # getent netgroup [name]
+    group=$(echo $x | sed -e 's/+//g')
+    for members in $(getent netgroup $group | sed -e 's/ //g' -e 's/(,/ /g' -e 's/,)//g' | awk -F$group '{ print $NF }' )
+    do
+        echo -n "$HOSTNAME;netgroup;$group;$members;"
+        echo -n "$(getent passwd $members | awk -F: '{ print $5 }')"
+        echo ";"$sudo_file";"
+    done
+}
+
 #------ End of functions section
 
 # Find the relevant directory as set bij the #includedir
